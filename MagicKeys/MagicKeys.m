@@ -9,6 +9,12 @@
 #import "MagicKeys.h"
 
 @implementation MagicKeys
+@synthesize checkForUpdatesButton;
+@synthesize updateText;
+@synthesize broughtToYouByTreasureBox;
+
+- (IBAction)checkForUpdatesPressed:(id)sender {
+}
 
 - (void)mainViewDidLoad
 {

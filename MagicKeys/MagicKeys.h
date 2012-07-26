@@ -9,7 +9,12 @@
 #import <PreferencePanes/PreferencePanes.h>
 
 @interface MagicKeys : NSPreferencePane
+@property (assign) IBOutlet NSButton *checkForUpdatesButton;
+@property (assign) IBOutlet NSTextView *updateText;
+@property (assign) IBOutlet NSTextView *broughtToYouByTreasureBox;
 
+
+- (IBAction)checkForUpdatesPressed:(id)sender;
 - (void)mainViewDidLoad;
 
 @end
