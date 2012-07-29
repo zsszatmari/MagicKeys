@@ -10,11 +10,9 @@
 #import "MagicKeys.h"
 
 static NSString * const kBundle = @"com.treasurebox.magickeys";
-static NSString * const kRoutingKey = @"routingEnabled";
+static NSString * const kHelperPath = @"Contents/Library/LoginItems/MagicKeys-Agent.app";
+static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
 
-static NSString * const kHelper = @"MagicKeys-Agent";
-
-// TODO: update properly... (stop and run)
 
 
 @implementation MagicKeys
@@ -22,13 +20,22 @@ static NSString * const kHelper = @"MagicKeys-Agent";
 @synthesize checkForUpdatesButton;
 @synthesize updateText;
 @synthesize broughtToYouByTreasureBox;
-
+@synthesize routingCheckbox;
 
 - (void)mainViewDidLoad
 {
-    @try {    
-    
-        [self registerAgent:[self routingEnabled]];
+    @try {
+            
+        BOOL routingEnabled = [self routingEnabled];
+        if (![[[[NSUserDefaults standardUserDefaults] persistentDomainForName:kBundle] objectForKey:kPreferenceKeyNotFirstRun] boolValue]) {
+            
+            [self setRoutingEnabled:YES];
+            [[NSUserDefaults standardUserDefaults] setPersistentDomain:@{ kPreferenceKeyNotFirstRun : @YES } forName:kBundle];
+            routingEnabled = YES;
+        }
+        
+        [routingCheckbox setIntValue:routingEnabled];
+        
         
         NSString *treasureText = @"brought to you by Treasure Box";
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:treasureText];
@@ -38,6 +45,7 @@ static NSString * const kHelper = @"MagicKeys-Agent";
             [attributedText setAttributes:@{NSLinkAttributeName: [NSURL URLWithString:@"http://www.treasurebox.hu"]} range:range];
         }
         [[broughtToYouByTreasureBox textStorage] setAttributedString:attributedText];
+        [broughtToYouByTreasureBox setFont:[NSFont systemFontOfSize:13.0f]];
 
         [self checkForUpdatesPressed:nil];
         
@@ -45,6 +53,10 @@ static NSString * const kHelper = @"MagicKeys-Agent";
     @catch (NSException *exception) {
         NSLog(@"exception caught: %@, call stack: %@", exception, [exception callStackSymbols]);
     }
+}
+
+- (IBAction)toggleRouting:(id)sender {
+    [self setRoutingEnabled:[routingCheckbox intValue]];
 }
 
 - (BOOL)routingEnabled
@@ -73,9 +85,9 @@ static NSString * const kHelper = @"MagicKeys-Agent";
     BOOL found = NO;
     
     CFArrayRef loginItemsArrayCf = LSSharedFileListCopySnapshot(loginItems, &seedValue);
-    NSArray  *loginItemsArray = (__bridge NSArray *)loginItemsArrayCf;
+    NSArray  *loginItemsArray = (NSArray *)loginItemsArrayCf;
     for(int i = 0; i< [loginItemsArray count]; i++){
-        LSSharedFileListItemRef itemRef = (__bridge LSSharedFileListItemRef)loginItemsArray[i];
+        LSSharedFileListItemRef itemRef = (LSSharedFileListItemRef)[loginItemsArray objectAtIndex:i];
         //Resolve the item with URL
         CFURLRef url;
         if (LSSharedFileListItemResolve(itemRef, 0, &url, NULL) == noErr) {
@@ -101,7 +113,7 @@ static NSString * const kHelper = @"MagicKeys-Agent";
 
 - (NSString *)agentPath
 {
-    NSString *path = [[[self magicBundle] bundlePath] stringByAppendingPathComponent: @"Contents/Library/MagicKeys/G-Keys-Agent.app"];
+    NSString *path = [[[self magicBundle] bundlePath] stringByAppendingPathComponent: kHelperPath];
     
     return path;
 }
@@ -120,16 +132,16 @@ static NSString * const kHelper = @"MagicKeys-Agent";
     if (enabled) {
         //Insert an item to the list.
 		LSSharedFileListItemRef item = LSSharedFileListInsertItemURL(loginItems,
-                                                                     kLSSharedFileListItemLast, ( CFStringRef)@"G-Keys", NULL,
-                                                                     (__bridge  CFURLRef)url, NULL, NULL);
+                                                                     kLSSharedFileListItemLast, ( CFStringRef)@"Magic Keys", NULL,
+                                                                     (CFURLRef)url, NULL, NULL);
         if (item != NULL) {
             NSLog(@"successfully added item");
             CFRelease(item);
         } else {
-            NSLog(@"can't insert item");
+            NSLog(@"can't insert item: %@", url);
         }
         
-        OSStatus err = LSOpenCFURLRef((__bridge  CFURLRef)url, NULL);
+        OSStatus err = LSOpenCFURLRef((CFURLRef)url, NULL);
         if (err != noErr) {
             NSLog(@"couldn't start agent: %d", (int)err);
         }
@@ -154,7 +166,7 @@ static NSString * const kHelper = @"MagicKeys-Agent";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
         NSError *err;
         NSHTTPURLResponse *response;
-        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://www.treasurebox.hu/magickeys/version.txt"]];
+        NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://www.treasurebox.hu/magickeys/version.txt"] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15.0f] autorelease];
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -162,18 +174,17 @@ static NSString * const kHelper = @"MagicKeys-Agent";
             
             if (err != nil || [response statusCode] != 200) {
                 [[[updateText textStorage] mutableString] setString:@"Check for updates failed"];
-                NSLog(@"check for updates failed: %@, %ld", err, [response statusCode]);
+                NSLog(@"check for updates failed: %@, %ld", err, (long)[response statusCode]);
             } else {
-                NSString *version = [[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"] objectAtIndex:0];
+                NSString *contents = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+                NSString *version = [[contents componentsSeparatedByString:@"\n"] objectAtIndex:0];
                 NSString *localVersion = [[self magicBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-                
-                NSLog(@"version: '%@' local: '%@' bundle: %@, dict: %@ ", version, localVersion, [self magicBundle], [[self magicBundle] infoDictionary]);
                 
                 if ([version isEqualToString:localVersion]) {
                     [[[updateText textStorage] mutableString] setString:@"Magic Keys is up to date"];
                 } else {
                     NSString *text = @"There is a new version available, please get it for better functionality";
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text];
+                    NSMutableAttributedString *attributedText = [[[NSMutableAttributedString alloc] initWithString:text] autorelease];
                     
                     NSRange range = [text rangeOfString:@"get it"];
                     if (range.location != NSNotFound) {

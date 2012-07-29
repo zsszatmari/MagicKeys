@@ -22,6 +22,8 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 static NSString *kKeySerialNumber = @"SerialNumber";
 static NSString *kKeyIsApple = @"isApple";
+static NSString *kKeyProcessSpecificTap = @"ProcessTap";
+static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 #pragma mark -
 #pragma mark Setup and teardown
@@ -182,19 +184,15 @@ static NSString *kKeyIsApple = @"isApple";
 #pragma mark -
 #pragma mark Event tap callbacks
 
-// Note: method called on background thread
-
-static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+- (BOOL)isMediaEvent:(CGEventRef)event type:(CGEventType)type
 {
-	SPMediaKeyTap *self = refcon;
-
     if(type == kCGEventTapDisabledByTimeout) {
 		NSLog(@"Media key event tap was disabled by timeout");
 		CGEventTapEnable(self->_eventPort, TRUE);
-		return event;
+		return NO;
 	} else if(type == kCGEventTapDisabledByUserInput) {
 		// Was disabled manually by -[pauseTapOnTapThread]
-		return event;
+		return NO;
 	}
 	NSEvent *nsEvent = nil;
 	@try {
@@ -203,49 +201,97 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
 	@catch (NSException * e) {
 		NSLog(@"Strange CGEventType: %d: %@", type, e);
 		assert(0);
-		return event;
+		return NO;
 	}
-
-	if (type != NX_SYSDEFINED || [nsEvent subtype] != SPSystemDefinedEventMediaKeys)
-		return event;
-
-	int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
-    if (keyCode != NX_KEYTYPE_PLAY && keyCode != NX_KEYTYPE_FAST && keyCode != NX_KEYTYPE_REWIND && keyCode != NX_KEYTYPE_PREVIOUS && keyCode != NX_KEYTYPE_NEXT)
-		return event;
-
-	if (![self shouldInterceptMediaKeyEvents])
-		return event;
     
-	[nsEvent retain]; // matched in handleAndReleaseMediaKeyEvent:
-	[self performSelectorOnMainThread:@selector(handleAndReleaseMediaKeyEvent:) withObject:nsEvent waitUntilDone:NO];
-	
-	return NULL;
-}
-
-static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
-{
-	NSAutoreleasePool *pool = [NSAutoreleasePool new];
-	CGEventRef ret = tapEventCallback2(proxy, type, event, refcon);
-	[pool drain];
-	return ret;
+	if (type != NX_SYSDEFINED || [nsEvent subtype] != SPSystemDefinedEventMediaKeys) {
+		return NO;
+    }
+    
+	int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
+    if (keyCode != NX_KEYTYPE_PLAY && keyCode != NX_KEYTYPE_FAST && keyCode != NX_KEYTYPE_REWIND && keyCode != NX_KEYTYPE_PREVIOUS && keyCode != NX_KEYTYPE_NEXT) {
+        
+        return NO;
+    }
+    
+	if (![self shouldInterceptMediaKeyEvents])
+		return NO;
+    
+    return YES;
 }
 
 
 // event will have been retained in the other thread
--(void)handleAndReleaseMediaKeyEvent:(NSEvent *)event {
-	[event autorelease];
-
+- (BOOL)handleAndReleaseMediaKeyEvent:(CGEventRef)cgEvent {
+    
     if ([_mediaKeyAppList count] == 0) {
-        return;
+        return NO;
     }
     
-    CGEventRef cgEvent = [event CGEvent];
+    NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
+    if ([[entry objectForKey:kKeyIsApple] boolValue]) {
+        return NO;
+    }
     
     ProcessSerialNumber targetSerial;
-    [[[_mediaKeyAppList objectAtIndex:0] objectForKey:kKeySerialNumber] getValue:&targetSerial];
+    [[entry objectForKey:kKeySerialNumber] getValue:&targetSerial];
     CGEventPostToPSN(&targetSerial, cgEvent);
-	[_delegate mediaKeyTap:self receivedMediaKeyEvent:event];
+    
+    return YES;
 }
+
+- (BOOL)isFirstApple
+{
+    
+    if ([_mediaKeyAppList count] == 0) {
+        return NO;
+    }
+    
+    NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
+    return [[entry objectForKey:kKeyIsApple] boolValue];
+}
+
+// Note: method called on background thread
+
+static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+{
+    SPMediaKeyTap *self = refcon;
+    
+    @autoreleasepool {
+        
+        if (![self isMediaEvent:event type:type]) {
+            return event;
+        }
+        
+        if ([self handleAndReleaseMediaKeyEvent:event]) {
+            
+            // handled
+            return NULL;
+        }
+        
+        // normal flow, for now (see you at tapEventCallbackForProcess)
+        return event;
+
+    }
+}
+
+static CGEventRef tapEventCallbackForProcess(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+{
+    SPMediaKeyTap *self = refcon;
+
+    @autoreleasepool {
+        if (![self isMediaEvent:event type:type]) {
+            return event;
+        }
+        
+        if ([self isFirstApple]) {
+            return NULL;
+        } else {
+            return event;
+        }
+    }
+}
+
 
 
 -(void)eventTapThread;
@@ -278,7 +324,7 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 		NSLog(@"%d: %@", i++, bundleIdentifier);
 	}*/
 	
-	[self setShouldInterceptMediaKeyEvents:([_mediaKeyAppList count] > 0) && (![[[_mediaKeyAppList objectAtIndex:0] objectForKey:kKeyIsApple] boolValue])];	
+	[self setShouldInterceptMediaKeyEvents:([_mediaKeyAppList count] > 0)];
 }
 
 - (void)removeSerialFromAppList:(NSValue *)psnv
@@ -296,21 +342,43 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 {
 	NSValue *psnv = [NSValue valueWithBytes:&psn objCType:@encode(ProcessSerialNumber)];
 	
-	NSDictionary *processInfo = [(id)ProcessInformationCopyDictionary(
+	NSDictionary *processInfo = CFMakeCollectable(ProcessInformationCopyDictionary(
 		&psn,
 		kProcessDictionaryIncludeAllInformationMask
-	) autorelease];
-	NSString *bundleIdentifier = [processInfo objectForKey:(id)kCFBundleIdentifierKey];
+	));
+    [processInfo autorelease];
+	NSString *bundleIdentifier = [processInfo objectForKey:(NSString *)kCFBundleIdentifierKey];
 
 	NSArray *whitelistIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:kMediaKeyUsingBundleIdentifiersDefaultsKey];
 	if(![whitelistIdentifiers containsObject:bundleIdentifier]) return;
 
     
 	[self removeSerialFromAppList:psnv];
-	[_mediaKeyAppList insertObject:
-        [NSDictionary dictionaryWithObjectsAndKeys:psnv, kKeySerialNumber,
-                                                  [NSNumber numberWithBool:[bundleIdentifier hasPrefix:@"com.apple."]],
-                                                    kKeyIsApple,nil] atIndex:0];
+    BOOL isApple = [bundleIdentifier hasPrefix:@"com.apple."];
+    NSMutableDictionary *appEntry = [NSMutableDictionary dictionaryWithDictionary:@{ kKeySerialNumber : psnv, kKeyIsApple : @(isApple)}];
+	if (!isApple) {
+        CFMachPortRef port = CGEventTapCreateForPSN(&psn, kCGHeadInsertEventTap,
+                               kCGEventTapOptionDefault,
+                               CGEventMaskBit(NX_SYSDEFINED),
+                               tapEventCallbackForProcess,
+                               self);
+        if (port == NULL) {
+            NSLog(@"error listening tapping to process %@", bundleIdentifier);
+        } else {
+            // TODO: leaks!
+            CFRunLoopSourceRef sourceForProcessTap = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, port, 0);
+            if (sourceForProcessTap == NULL) {
+                NSLog(@"error creating source for process %@", bundleIdentifier);
+            } else {
+                CFRunLoopAddSource(_tapThreadRL, sourceForProcessTap, kCFRunLoopCommonModes);
+                [appEntry setObject:(id)port forKey:kKeyProcessSpecificTap];
+                [appEntry setObject:(id)sourceForProcessTap forKey:kKeyProcessSpecificRunloopSource];
+                CFRelease(sourceForProcessTap);
+            }
+            CFRelease(port);
+        }
+    }
+    [_mediaKeyAppList insertObject:appEntry atIndex:0];
 	[self mediaKeyAppListChanged];
 }
 

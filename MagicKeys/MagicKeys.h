@@ -9,17 +9,21 @@
 #import <PreferencePanes/PreferencePanes.h>
 
 @interface MagicKeys : NSPreferencePane {
-    NSButton *__strong checkForUpdatesButton;
-    NSTextView *__strong updateText;
-    NSTextView *__strong broughtToYouByTreasureBox;
+    // needed for 32-bit compile, which is needed if some old prefpane makes system preferences switch to compatibility mode
+    NSButton *checkForUpdatesButton;
+    NSTextView *updateText;
+    NSTextView *broughtToYouByTreasureBox;
+    NSButton *routingCheckbox;
 }
 
 @property (strong) IBOutlet NSButton *checkForUpdatesButton;
 @property (strong) IBOutlet NSTextView *updateText;
 @property (strong) IBOutlet NSTextView *broughtToYouByTreasureBox;
+@property (weak) IBOutlet NSButton *routingCheckbox;
 
 
 - (IBAction)checkForUpdatesPressed:(id)sender;
+- (IBAction)toggleRouting:(id)sender;
 - (void)mainViewDidLoad;
 
 @end

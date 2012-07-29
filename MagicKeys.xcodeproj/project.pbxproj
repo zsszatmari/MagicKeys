@@ -7,15 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA3D876B15C2B16F00442343 /* MagicKeys.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D876A15C2B16F00442343 /* MagicKeys.png */; };
 		AA965CED15C112FE00429016 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA965CEC15C112FE00429016 /* Cocoa.framework */; };
 		AA965CEF15C112FE00429016 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA965CEE15C112FE00429016 /* PreferencePanes.framework */; };
 		AA965CF915C112FE00429016 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA965CF715C112FE00429016 /* InfoPlist.strings */; };
 		AA965CFD15C112FE00429016 /* MagicKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = AA965CFC15C112FE00429016 /* MagicKeys.m */; };
-		AA965CFF15C112FE00429016 /* MagicKeys.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AA965CFE15C112FE00429016 /* MagicKeys.tiff */; };
 		AA965D0215C112FE00429016 /* MagicKeys.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA965D0015C112FE00429016 /* MagicKeys.xib */; };
+		AA9793F315C3FEDD00107AB0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA965CEC15C112FE00429016 /* Cocoa.framework */; };
+		AA9793F915C3FEDD00107AB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA9793F715C3FEDD00107AB0 /* InfoPlist.strings */; };
+		AA97940B15C3FF6B00107AB0 /* MagicKeys-Agent.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */; };
+		AA97940C15C3FFB800107AB0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E615C3C57C00107AB0 /* main.m */; };
+		AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */; };
+		AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */; };
+		AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9793E815C3C5C000107AB0 /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AA97940915C3FF5B00107AB0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA965CDE15C112FE00429016 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA9793F015C3FEDD00107AB0;
+			remoteInfo = "MagicKeys-Agent";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA9793DF15C3C4F800107AB0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ../Library/LoginItems;
+			dstSubfolderSpec = 7;
+			files = (
+				AA97940B15C3FF6B00107AB0 /* MagicKeys-Agent.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		AA3D876A15C2B16F00442343 /* MagicKeys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagicKeys.png; sourceTree = "<group>"; };
 		AA965CE915C112FE00429016 /* MagicKeys.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MagicKeys.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA965CEC15C112FE00429016 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA965CEE15C112FE00429016 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
@@ -27,8 +58,18 @@
 		AA965CFA15C112FE00429016 /* MagicKeys-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MagicKeys-Prefix.pch"; sourceTree = "<group>"; };
 		AA965CFB15C112FE00429016 /* MagicKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MagicKeys.h; sourceTree = "<group>"; };
 		AA965CFC15C112FE00429016 /* MagicKeys.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MagicKeys.m; sourceTree = "<group>"; };
-		AA965CFE15C112FE00429016 /* MagicKeys.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MagicKeys.tiff; sourceTree = "<group>"; };
 		AA965D0115C112FE00429016 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MagicKeys.xib; sourceTree = "<group>"; };
+		AA9793CC15C3C4D400107AB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AA9793D215C3C4D400107AB0 /* MagicKeys-Agent-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MagicKeys-Agent-Prefix.pch"; sourceTree = "<group>"; };
+		AA9793E015C3C54700107AB0 /* NSObject+SPInvocationGrabbing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SPInvocationGrabbing.h"; sourceTree = "<group>"; };
+		AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SPInvocationGrabbing.m"; sourceTree = "<group>"; };
+		AA9793E215C3C54700107AB0 /* SPMediaKeyTap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMediaKeyTap.h; sourceTree = "<group>"; };
+		AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMediaKeyTap.m; sourceTree = "<group>"; };
+		AA9793E615C3C57C00107AB0 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AA9793E815C3C5C000107AB0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
+		AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MagicKeys-Agent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA9793F615C3FEDD00107AB0 /* MagicKeys-Agent-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MagicKeys-Agent-Info.plist"; sourceTree = "<group>"; };
+		AA9793F815C3FEDD00107AB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +82,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA9793EE15C3FEDD00107AB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA9793F315C3FEDD00107AB0 /* Cocoa.framework in Frameworks */,
+				AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				AA965CF415C112FE00429016 /* MagicKeys */,
+				AA9793CE15C3C4D400107AB0 /* MagicKeys-Agent */,
 				AA965CEB15C112FE00429016 /* Frameworks */,
 				AA965CEA15C112FE00429016 /* Products */,
 			);
@@ -57,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				AA965CE915C112FE00429016 /* MagicKeys.prefPane */,
+				AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,8 +116,10 @@
 		AA965CEB15C112FE00429016 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA9793E815C3C5C000107AB0 /* Carbon.framework */,
 				AA965CEC15C112FE00429016 /* Cocoa.framework */,
 				AA965CEE15C112FE00429016 /* PreferencePanes.framework */,
+				AA9793CC15C3C4D400107AB0 /* Foundation.framework */,
 				AA965CF015C112FE00429016 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -86,7 +140,7 @@
 			children = (
 				AA965CFB15C112FE00429016 /* MagicKeys.h */,
 				AA965CFC15C112FE00429016 /* MagicKeys.m */,
-				AA965CFE15C112FE00429016 /* MagicKeys.tiff */,
+				AA3D876A15C2B16F00442343 /* MagicKeys.png */,
 				AA965D0015C112FE00429016 /* MagicKeys.xib */,
 				AA965CF515C112FE00429016 /* Supporting Files */,
 			);
@@ -99,6 +153,29 @@
 				AA965CF615C112FE00429016 /* MagicKeys-Info.plist */,
 				AA965CF715C112FE00429016 /* InfoPlist.strings */,
 				AA965CFA15C112FE00429016 /* MagicKeys-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AA9793CE15C3C4D400107AB0 /* MagicKeys-Agent */ = {
+			isa = PBXGroup;
+			children = (
+				AA9793E615C3C57C00107AB0 /* main.m */,
+				AA9793E015C3C54700107AB0 /* NSObject+SPInvocationGrabbing.h */,
+				AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */,
+				AA9793E215C3C54700107AB0 /* SPMediaKeyTap.h */,
+				AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */,
+				AA9793D115C3C4D400107AB0 /* Supporting Files */,
+			);
+			path = "MagicKeys-Agent";
+			sourceTree = "<group>";
+		};
+		AA9793D115C3C4D400107AB0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AA9793F615C3FEDD00107AB0 /* MagicKeys-Agent-Info.plist */,
+				AA9793F715C3FEDD00107AB0 /* InfoPlist.strings */,
+				AA9793D215C3C4D400107AB0 /* MagicKeys-Agent-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -125,15 +202,34 @@
 				AA965CE515C112FE00429016 /* Headers */,
 				AA965CE615C112FE00429016 /* Resources */,
 				AA965CE715C112FE00429016 /* Rez */,
+				AA9793DF15C3C4F800107AB0 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA97940A15C3FF5B00107AB0 /* PBXTargetDependency */,
 			);
 			name = MagicKeys;
 			productName = MagicKeys;
 			productReference = AA965CE915C112FE00429016 /* MagicKeys.prefPane */;
 			productType = "com.apple.product-type.bundle";
+		};
+		AA9793F015C3FEDD00107AB0 /* MagicKeys-Agent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA97940615C3FEDD00107AB0 /* Build configuration list for PBXNativeTarget "MagicKeys-Agent" */;
+			buildPhases = (
+				AA9793ED15C3FEDD00107AB0 /* Sources */,
+				AA9793EE15C3FEDD00107AB0 /* Frameworks */,
+				AA9793EF15C3FEDD00107AB0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MagicKeys-Agent";
+			productName = "MagicKeys-Agent";
+			productReference = AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -157,6 +253,7 @@
 			projectRoot = "";
 			targets = (
 				AA965CE815C112FE00429016 /* MagicKeys */,
+				AA9793F015C3FEDD00107AB0 /* MagicKeys-Agent */,
 			);
 		};
 /* End PBXProject section */
@@ -167,8 +264,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA965CF915C112FE00429016 /* InfoPlist.strings in Resources */,
-				AA965CFF15C112FE00429016 /* MagicKeys.tiff in Resources */,
 				AA965D0215C112FE00429016 /* MagicKeys.xib in Resources */,
+				AA3D876B15C2B16F00442343 /* MagicKeys.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA9793EF15C3FEDD00107AB0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA9793F915C3FEDD00107AB0 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +298,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA9793ED15C3FEDD00107AB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA97940C15C3FFB800107AB0 /* main.m in Sources */,
+				AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */,
+				AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA97940A15C3FF5B00107AB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA9793F015C3FEDD00107AB0 /* MagicKeys-Agent */;
+			targetProxy = AA97940915C3FF5B00107AB0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		AA965CF715C112FE00429016 /* InfoPlist.strings */ = {
@@ -212,6 +335,14 @@
 			name = MagicKeys.xib;
 			sourceTree = "<group>";
 		};
+		AA9793F715C3FEDD00107AB0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA9793F815C3FEDD00107AB0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -227,7 +358,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -241,7 +372,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -257,22 +388,22 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		AA965D0615C112FE00429016 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys/MagicKeys-Prefix.pch";
@@ -287,8 +418,8 @@
 		AA965D0715C112FE00429016 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys/MagicKeys-Prefix.pch";
@@ -297,6 +428,36 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = prefPane;
+			};
+			name = Release;
+		};
+		AA97940715C3FEDD00107AB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
+				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AA97940815C3FEDD00107AB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
+				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -317,6 +478,15 @@
 			buildConfigurations = (
 				AA965D0615C112FE00429016 /* Debug */,
 				AA965D0715C112FE00429016 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA97940615C3FEDD00107AB0 /* Build configuration list for PBXNativeTarget "MagicKeys-Agent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA97940715C3FEDD00107AB0 /* Debug */,
+				AA97940815C3FEDD00107AB0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -349,7 +349,7 @@ wGw</bytes>
 									<double key="NSPercent">0.94565218687057495</double>
 								</object>
 							</array>
-							<string key="NSFrame">{{129, 45}, {408, 17}}</string>
+							<string key="NSFrame">{{94, 45}, {408, 17}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="493031907"/>
@@ -365,7 +365,7 @@ wGw</bytes>
 						<object class="NSTextField" id="119693400">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{98, 20}, {414, 17}}</string>
+							<string key="NSFrame">{{98, 20}, {494, 17}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
@@ -374,7 +374,7 @@ wGw</bytes>
 							<object class="NSTextFieldCell" key="NSCell" id="478367130">
 								<int key="NSCellFlags">68157504</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">based on SPMediaKeyTap Copyright (c) 2011, Joachim Bengtsson</string>
+								<string key="NSContents">uses code from SPMediaKeyTap Copyright (c) 2011, Joachim Bengtsson</string>
 								<object class="NSFont" key="NSSupport" id="261681727">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">13</double>
@@ -455,8 +455,8 @@ wGw</bytes>
 								</object>
 								<string key="NSCellIdentifier">_NS:9</string>
 								<int key="NSAlign">0</int>
-								<int key="NSScale">0</int>
-								<int key="NSStyle">2</int>
+								<int key="NSScale">3</int>
+								<int key="NSStyle">0</int>
 								<bool key="NSAnimates">NO</bool>
 							</object>
 							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -818,6 +818,22 @@ wGw</bytes>
 					</object>
 					<int key="connectionID">133</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toggleRouting:</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="463770587"/>
+					</object>
+					<int key="connectionID">134</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">routingCheckbox</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="463770587"/>
+					</object>
+					<int key="connectionID">135</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -853,11 +869,11 @@ wGw</bytes>
 						<reference key="object" ref="1037298196"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="835036726"/>
-							<reference ref="797753946"/>
 							<reference ref="119693400"/>
 							<reference ref="463770587"/>
 							<reference ref="438745422"/>
 							<reference ref="38092559"/>
+							<reference ref="797753946"/>
 						</array>
 						<reference key="parent" ref="660800786"/>
 					</object>
@@ -1000,27 +1016,31 @@ wGw</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">133</int>
+			<int key="maxID">135</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">MagicKeys</string>
 					<string key="superclassName">NSPreferencePane</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">checkForUpdatesPressed:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">checkForUpdatesPressed:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="checkForUpdatesPressed:">id</string>
+						<string key="toggleRouting:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="checkForUpdatesPressed:">
 							<string key="name">checkForUpdatesPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+						<object class="IBActionInfo" key="toggleRouting:">
+							<string key="name">toggleRouting:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="broughtToYouByTreasureBox">NSTextView</string>
 						<string key="checkForUpdatesButton">NSButton</string>
+						<string key="routingCheckbox">NSButton</string>
 						<string key="updateText">NSTextView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1030,6 +1050,10 @@ wGw</bytes>
 						</object>
 						<object class="IBToOneOutletInfo" key="checkForUpdatesButton">
 							<string key="name">checkForUpdatesButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="routingCheckbox">
+							<string key="name">routingCheckbox</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="updateText">
@@ -1081,7 +1105,7 @@ wGw</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="MagicKeys">{32, 32}</string>
+			<string key="MagicKeys">{61.452289957891566, 61.452289957891566}</string>
 			<string key="NSSwitch">{15, 15}</string>
 		</dictionary>
 	</data>

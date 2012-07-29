@@ -24,7 +24,6 @@
 +(BOOL)usesGlobalMediaKeyTap;
 -(void)startWatchingMediaKeys;
 -(void)stopWatchingMediaKeys;
--(void)handleAndReleaseMediaKeyEvent:(NSEvent *)event;
 @end
 
 @interface NSObject (SPMediaKeyTapDelegate)
