@@ -164,7 +164,7 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
     [[[updateText textStorage] mutableString] setString:@"Checking for updates..."];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
-        NSError *err;
+        NSError *err = nil;
         NSHTTPURLResponse *response;
         NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://www.treasurebox.hu/magickeys/version.txt"] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15.0f] autorelease];
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
@@ -173,9 +173,11 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
             [checkForUpdatesButton setEnabled:YES];
             
             if (err != nil || [response statusCode] != 200) {
+                
                 [[[updateText textStorage] mutableString] setString:@"Check for updates failed"];
                 NSLog(@"check for updates failed: %@, %ld", err, (long)[response statusCode]);
             } else {
+                
                 NSString *contents = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
                 NSString *version = [[contents componentsSeparatedByString:@"\n"] objectAtIndex:0];
                 NSString *localVersion = [[self magicBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
