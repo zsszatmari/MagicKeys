@@ -2,11 +2,13 @@
 #import <IOKit/hidsystem/ev_keymap.h>
 #import <Carbon/Carbon.h>
 
+#import "HIDRemote.h"
+
 // http://overooped.com/post/2593597587/mediakeys
 
 #define SPSystemDefinedEventMediaKeys 8
 
-@interface SPMediaKeyTap : NSObject {
+@interface SPMediaKeyTap : NSObject<HIDRemoteDelegate> {
 	EventHandlerRef _app_switching_ref;
 	EventHandlerRef _app_terminating_ref;
 	CFMachPortRef _eventPort;
@@ -16,6 +18,7 @@
 	id _delegate;
 	// The app that is frontmost in this list owns media keys
 	NSMutableArray *_mediaKeyAppList;
+    HIDRemote *hidRemote;
 }
 + (NSArray*)defaultMediaKeyUserBundleIdentifiers;
 

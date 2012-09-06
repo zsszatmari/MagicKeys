@@ -21,8 +21,9 @@ int main(int argc, char *argv[])
         
         
         SPMediaKeyTap *keyTap = [[SPMediaKeyTap alloc] initWithDelegate:nil];
-        if([SPMediaKeyTap usesGlobalMediaKeyTap])
+        if([SPMediaKeyTap usesGlobalMediaKeyTap]) {
             [keyTap startWatchingMediaKeys];
+        }
         
         CFRunLoopRun();
         [keyTap release];

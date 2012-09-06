@@ -20,6 +20,9 @@
 		AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */; };
 		AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */; };
 		AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9793E815C3C5C000107AB0 /* Carbon.framework */; };
+		AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFF8D5E15F8A0650084A11B /* HIDRemote.m */; };
+		AAFF8D6215F8A54C0084A11B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAFF8D6115F8A54C0084A11B /* IOKit.framework */; };
+		AAFF8D9615F8FC0E0084A11B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AAFF8D9515F8FC0E0084A11B /* Credits.rtf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +73,10 @@
 		AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MagicKeys-Agent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA9793F615C3FEDD00107AB0 /* MagicKeys-Agent-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MagicKeys-Agent-Info.plist"; sourceTree = "<group>"; };
 		AA9793F815C3FEDD00107AB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AAFF8D5E15F8A0650084A11B /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemote.m; sourceTree = "<group>"; };
+		AAFF8D5F15F8A0650084A11B /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemote.h; sourceTree = "<group>"; };
+		AAFF8D6115F8A54C0084A11B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		AAFF8D9515F8FC0E0084A11B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAFF8D6215F8A54C0084A11B /* IOKit.framework in Frameworks */,
 				AA9793F315C3FEDD00107AB0 /* Cocoa.framework in Frameworks */,
 				AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */,
 			);
@@ -116,6 +124,7 @@
 		AA965CEB15C112FE00429016 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AAFF8D6115F8A54C0084A11B /* IOKit.framework */,
 				AA9793E815C3C5C000107AB0 /* Carbon.framework */,
 				AA965CEC15C112FE00429016 /* Cocoa.framework */,
 				AA965CEE15C112FE00429016 /* PreferencePanes.framework */,
@@ -138,6 +147,7 @@
 		AA965CF415C112FE00429016 /* MagicKeys */ = {
 			isa = PBXGroup;
 			children = (
+				AAFF8D9515F8FC0E0084A11B /* Credits.rtf */,
 				AA965CFB15C112FE00429016 /* MagicKeys.h */,
 				AA965CFC15C112FE00429016 /* MagicKeys.m */,
 				AA3D876A15C2B16F00442343 /* MagicKeys.png */,
@@ -160,6 +170,8 @@
 		AA9793CE15C3C4D400107AB0 /* MagicKeys-Agent */ = {
 			isa = PBXGroup;
 			children = (
+				AAFF8D5E15F8A0650084A11B /* HIDRemote.m */,
+				AAFF8D5F15F8A0650084A11B /* HIDRemote.h */,
 				AA9793E615C3C57C00107AB0 /* main.m */,
 				AA9793E015C3C54700107AB0 /* NSObject+SPInvocationGrabbing.h */,
 				AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */,
@@ -266,6 +278,7 @@
 				AA965CF915C112FE00429016 /* InfoPlist.strings in Resources */,
 				AA965D0215C112FE00429016 /* MagicKeys.xib in Resources */,
 				AA3D876B15C2B16F00442343 /* MagicKeys.png in Resources */,
+				AAFF8D9615F8FC0E0084A11B /* Credits.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +318,7 @@
 				AA97940C15C3FFB800107AB0 /* main.m in Sources */,
 				AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */,
+				AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,6 +366,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Zsolt Szatmari";
 				COPY_PHASE_STRIP = NO;
@@ -369,7 +384,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -382,6 +397,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Zsolt Szatmari";
 				COPY_PHASE_STRIP = YES;
@@ -393,7 +409,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
@@ -402,7 +418,7 @@
 		AA965D0615C112FE00429016 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -418,7 +434,7 @@
 		AA965D0715C112FE00429016 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -434,12 +450,11 @@
 		AA97940715C3FEDD00107AB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
 				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -449,12 +464,11 @@
 		AA97940815C3FEDD00107AB0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
 				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;

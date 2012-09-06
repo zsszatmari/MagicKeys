@@ -13,29 +13,40 @@ static NSString * const kBundle = @"com.treasurebox.magickeys";
 static NSString * const kHelperPath = @"Contents/Library/LoginItems/MagicKeys-Agent.app";
 static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
 
-
+static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
 
 @implementation MagicKeys
 
 @synthesize checkForUpdatesButton;
 @synthesize updateText;
 @synthesize broughtToYouByTreasureBox;
+@synthesize copyrightNotice;
 @synthesize routingCheckbox;
+@synthesize appleRemoteCheckbox;
+@synthesize versionLabel;
 
 - (void)mainViewDidLoad
 {
     @try {
             
+        [versionLabel setStringValue:[NSString stringWithFormat:@"v%@",[self localVersion]]];
+        
         BOOL routingEnabled = [self routingEnabled];
-        if (![[[[NSUserDefaults standardUserDefaults] persistentDomainForName:kBundle] objectForKey:kPreferenceKeyNotFirstRun] boolValue]) {
+        if (![[self defaultsObjectForKey:kPreferenceKeyNotFirstRun] boolValue]) {
+            
+            [self setDefaultsObject:@YES forKey:kPreferenceKeyNotFirstRun];
+            [self setDefaultsObject:@YES forKey:kAppleRemoteKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
             [self setRoutingEnabled:YES];
-            [[NSUserDefaults standardUserDefaults] setPersistentDomain:@{ kPreferenceKeyNotFirstRun : @YES } forName:kBundle];
             routingEnabled = YES;
+        } else if ([self defaultsObjectForKey:kAppleRemoteKey] == nil) {
+            [self setAppleRemoteEnabled:YES];
         }
         
-        [routingCheckbox setIntValue:routingEnabled];
         
+        [routingCheckbox setIntValue:routingEnabled];
+        [appleRemoteCheckbox setEnabled:routingEnabled];
         
         NSString *treasureText = @"brought to you by Treasure Box";
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:treasureText];
@@ -46,7 +57,11 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
         }
         [[broughtToYouByTreasureBox textStorage] setAttributedString:attributedText];
         [broughtToYouByTreasureBox setFont:[NSFont systemFontOfSize:13.0f]];
-
+        
+        NSAttributedString *copyright = [[NSAttributedString alloc] initWithString:@"Copyright notice" attributes:@{NSLinkAttributeName : [NSURL URLWithString:@"http://www.treasurebox.hu"]}];
+        [[copyrightNotice textStorage] setAttributedString:copyright];
+        [copyrightNotice setDelegate:self];
+        
         [self checkForUpdatesPressed:nil];
         
     }
@@ -55,18 +70,74 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
     }
 }
 
+- (id)defaultsObjectForKey:(NSString *)key
+{
+    return [[[NSUserDefaults standardUserDefaults] persistentDomainForName:kBundle] objectForKey:key];
+}
+
+- (void)setDefaultsObject:(id)object forKey:(NSString *)key
+{
+    NSMutableDictionary *dictionary = [[[NSUserDefaults standardUserDefaults] persistentDomainForName:kBundle] mutableCopy];
+    [dictionary setObject:object forKey:key];
+    [[NSUserDefaults standardUserDefaults] setPersistentDomain:dictionary forName:kBundle];
+    [dictionary release];
+}
+
+- (BOOL)appleRemoteEnabled
+{
+    return [[self defaultsObjectForKey:kAppleRemoteKey] boolValue];
+}
+
+- (void)setAppleRemoteEnabled:(BOOL)value
+{
+    if (value != [self appleRemoteEnabled]) {
+        [self setDefaultsObject:@(value) forKey:kAppleRemoteKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self restartAgentIfRunning];
+    }
+}
+
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(NSUInteger)charIndex
+{
+    if (aTextView == copyrightNotice) {
+        NSImage *icon = [[[NSImage alloc] initWithContentsOfURL:[[self magicBundle] URLForResource:@"MagicKeys" withExtension:@"png"]] autorelease];
+        NSData *creditsData = [NSData dataWithContentsOfURL:[[self magicBundle] URLForResource:@"Credits" withExtension:@"rtf"]];
+        NSAttributedString *credits = [[[NSAttributedString alloc] initWithRTF:creditsData documentAttributes:NULL] autorelease];
+        
+        NSDictionary *dictionary =
+            @{@"ApplicationName":@"Magic Keys",
+        @"ApplicationIcon":icon,
+        @"Version":@"",
+        @"ApplicationVersion":[self localVersion],
+        @"Credits":credits};
+        [[NSApplication sharedApplication] orderFrontStandardAboutPanelWithOptions:dictionary];
+        return YES;
+    }
+        
+    return NO;
+}
+
 - (IBAction)toggleRouting:(id)sender {
     [self setRoutingEnabled:[routingCheckbox intValue]];
+    [appleRemoteCheckbox setEnabled:[routingCheckbox intValue]];
+}
+
+- (IBAction)toggleAppleRemote:(id)sender {
+    [self setAppleRemoteEnabled:[appleRemoteCheckbox intValue]];
 }
 
 - (BOOL)routingEnabled
 {
-    return [self searchForAgentAndRemove:NO];
+    BOOL ret = [self searchForAgentAndRemove:NO];
+    if (ret) {
+        [self startAgentIfNotRunning];
+    }
+    return ret;
 }
 
-- (void)setRoutingEnabled:(BOOL)routingEnabled
+- (void)setRoutingEnabled:(BOOL)aRoutingEnabled
 {
-    [self registerAgent:routingEnabled];
+    [self registerAgent:aRoutingEnabled];
 }
 
 - (BOOL)searchForAgentAndRemove:(BOOL)remove
@@ -118,6 +189,48 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
     return path;
 }
 
+- (void)startAgent
+{
+    NSString *path = [self agentPath];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    OSStatus err = LSOpenCFURLRef((CFURLRef)url, NULL);
+    if (err != noErr) {
+        NSLog(@"couldn't start agent: %d", (int)err);
+    }
+}
+
+- (void)stopAgent
+{
+    NSString *path = [self agentPath];
+    NSBundle *bundle = [NSBundle bundleWithPath:path];
+    for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:bundle.bundleIdentifier]) {
+        
+        [app forceTerminate];
+    }
+}
+
+- (void)restartAgentIfRunning
+{
+    NSString *path = [self agentPath];
+    NSBundle *bundle = [NSBundle bundleWithPath:path];
+    for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:bundle.bundleIdentifier]) {
+        
+        [app forceTerminate];
+        [self startAgent];
+        break;
+    }
+}
+
+- (void)startAgentIfNotRunning
+{
+    NSString *path = [self agentPath];
+    NSBundle *bundle = [NSBundle bundleWithPath:path];
+    if ([[NSRunningApplication runningApplicationsWithBundleIdentifier:bundle.bundleIdentifier] count] == 0) {
+        
+        [self startAgent];
+    }
+}
+
 - (void)registerAgent:(BOOL)enabled
 {
     LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
@@ -141,21 +254,18 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
             NSLog(@"can't insert item: %@", url);
         }
         
-        OSStatus err = LSOpenCFURLRef((CFURLRef)url, NULL);
-        if (err != noErr) {
-            NSLog(@"couldn't start agent: %d", (int)err);
-        }
-        
+        [self startAgent];
         
     } else {
         
         [self searchForAgentAndRemove:YES];
-        NSBundle *bundle = [NSBundle bundleWithPath:path];
-        for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:bundle.bundleIdentifier]) {
-            
-            [app forceTerminate];
-        }
+        [self stopAgent];
     }
+}
+
+- (NSString *)localVersion
+{
+    return [[self magicBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
 }
 
 - (IBAction)checkForUpdatesPressed:(id)sender {
@@ -180,7 +290,7 @@ static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
                 
                 NSString *contents = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
                 NSString *version = [[contents componentsSeparatedByString:@"\n"] objectAtIndex:0];
-                NSString *localVersion = [[self magicBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+                NSString *localVersion = [self localVersion];
                 
                 if ([version isEqualToString:localVersion]) {
                     [[[updateText textStorage] mutableString] setString:@"Magic Keys is up to date"];

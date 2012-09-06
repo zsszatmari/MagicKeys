@@ -1,6 +1,8 @@
 // Copyright (c) 2010 Spotify AB, (c) 2012 Treasure Box
 #import "SPMediaKeyTap.h"
 #import "NSObject+SPInvocationGrabbing.h" // https://gist.github.com/511181, in submodule
+#import "HIDRemote.h"
+
 
 @interface SPMediaKeyTap ()
 -(BOOL)shouldInterceptMediaKeyEvents;
@@ -46,6 +48,11 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 	[super dealloc];
 }
 
+- (BOOL)appleRemoteEnabled
+{
+    return YES;
+}
+
 -(void)startWatchingAppSwitching;
 {
 	// Listen to "app switched" event, so that we don't intercept media keys if we
@@ -85,7 +92,13 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 	
 	// Let's do this in a separate thread so that a slow app doesn't lag the event tap
 	[NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
+    
+    if (hidRemote == nil) {
+        hidRemote = [HIDRemote sharedHIDRemote];
+        [hidRemote setDelegate:self];
+    }
 }
+
 -(void)stopWatchingMediaKeys;
 {
 	// TODO<nevyn>: Shut down thread, remove event tap port and source
@@ -104,7 +117,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
     if(_eventPortSource){
         CFRelease(_eventPortSource);
         _eventPortSource=nil;
-    }
+    }    
 }
 
 #pragma mark -
@@ -165,6 +178,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 {
 	CGEventTapEnable(self->_eventPort, yeahno);
 }
+
 -(void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting;
 {
 	BOOL oldSetting;
@@ -172,12 +186,14 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 		oldSetting = _shouldInterceptMediaKeyEvents;
 		_shouldInterceptMediaKeyEvents = newSetting;
 	}
-	if(_tapThreadRL && oldSetting != newSetting) {
-		id grab = [self grab];
-		[grab pauseTapOnTapThread:newSetting];
-		NSTimer *timer = [NSTimer timerWithTimeInterval:0 invocation:[grab invocation] repeats:NO];
-		CFRunLoopAddTimer(_tapThreadRL, (CFRunLoopTimerRef)timer, kCFRunLoopCommonModes);
-	}
+    if (oldSetting != newSetting) {
+        if(_tapThreadRL) {
+            id grab = [self grab];
+            [grab pauseTapOnTapThread:newSetting];
+            NSTimer *timer = [NSTimer timerWithTimeInterval:0 invocation:[grab invocation] repeats:NO];
+            CFRunLoopAddTimer(_tapThreadRL, (CFRunLoopTimerRef)timer, kCFRunLoopCommonModes);
+        }
+    }
 }
 
 #pragma mark 
@@ -222,7 +238,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 
 // event will have been retained in the other thread
-- (BOOL)handleAndReleaseMediaKeyEvent:(CGEventRef)cgEvent {
+- (BOOL)handleMediaKeyEvent:(CGEventRef)cgEvent {
     
     if ([_mediaKeyAppList count] == 0) {
         return NO;
@@ -244,7 +260,8 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 {
     
     if ([_mediaKeyAppList count] == 0) {
-        return NO;
+        // yes, we mean the system is apple
+        return YES;
     }
     
     NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
@@ -263,7 +280,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
             return event;
         }
         
-        if ([self handleAndReleaseMediaKeyEvent:event]) {
+        if ([self handleMediaKeyEvent:event]) {
             
             // handled
             return NULL;
@@ -310,6 +327,18 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 
 -(void)mediaKeyAppListChanged;
 {
+    BOOL shouldGrabAppleRemote = ![self isFirstApple];
+    BOOL isGrabbingAppleRemote = [hidRemote isStarted];
+    if (shouldGrabAppleRemote != isGrabbingAppleRemote) {
+        if (shouldGrabAppleRemote) {
+            if ([[[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.treasurebox.magickeys"] objectForKey:@"AppleRemoteEnabled"] boolValue]) {
+                [hidRemote startRemoteControl:kHIDRemoteModeExclusive];
+            }
+        } else {
+            [hidRemote stopRemoteControl];
+        }
+    }
+    
 	if([_mediaKeyAppList count] == 0) return;
 	
 	/*NSLog(@"--");
@@ -420,6 +449,133 @@ static pascal OSStatus appTerminated (EventHandlerCallRef nextHandler, EventRef 
 	
 	[self appTerminated:deadPSN];
     return CallNextEventHandler(nextHandler, evt);
+}
+
+#pragma mark -- Apple Remote
+
+
+
+static io_connect_t get_event_driver(void)
+{
+    static  mach_port_t sEventDrvrRef = 0;
+    mach_port_t masterPort, service, iter;
+    kern_return_t    kr;
+    
+    if (!sEventDrvrRef)
+    {
+        // Get master device port
+        kr = IOMasterPort( bootstrap_port, &masterPort );
+        check( KERN_SUCCESS == kr);
+        
+        kr = IOServiceGetMatchingServices( masterPort, IOServiceMatching( kIOHIDSystemClass ), &iter );
+        check( KERN_SUCCESS == kr);
+        
+        service = IOIteratorNext( iter );
+        check( service );
+        
+        kr = IOServiceOpen( service, mach_task_self(),
+                           kIOHIDParamConnectType, &sEventDrvrRef );
+        check( KERN_SUCCESS == kr );
+        
+        IOObjectRelease( service );
+        IOObjectRelease( iter );
+    }
+    return sEventDrvrRef;
+}
+
+
+static void HIDPostAuxKey( const UInt8 auxKeyCode, BOOL down )
+{
+    NXEventData   event;
+    kern_return_t kr;
+    IOGPoint      loc = { 0, 0 };
+    
+    // Key press event
+    UInt32      evtInfo = auxKeyCode << 16 | (down ? (NX_KEYDOWN << 8) : 0);
+    bzero(&event, sizeof(NXEventData));
+    event.compound.subType = NX_SUBTYPE_AUX_CONTROL_BUTTONS;
+    event.compound.misc.L[0] = evtInfo;
+    kr = IOHIDPostEvent( get_event_driver(), NX_SYSDEFINED, loc, &event, kNXEventDataVersion, 0, FALSE );
+    check( KERN_SUCCESS == kr );    
+}
+
+- (void)hidRemote:(HIDRemote *)hidRemote
+  eventWithButton:(HIDRemoteButtonCode)aButtonCode
+        isPressed:(BOOL)aIsPressed
+fromHardwareWithAttributes:(NSMutableDictionary *)attributes
+{
+    static BOOL hold;
+    hold = (aButtonCode & kHIDRemoteButtonCodeHoldMask) != 0;
+    static HIDRemoteButtonCode buttonCode;
+    buttonCode = aButtonCode & kHIDRemoteButtonCodeCodeMask;
+    static BOOL isPressed;
+    isPressed = aIsPressed;
+    int keyCode;
+    void (^soundEventSend)() = nil;
+    switch(buttonCode) {
+        case kHIDRemoteButtonCodeCenter:
+        case kHIDRemoteButtonCodePlay:
+            keyCode = NX_KEYTYPE_PLAY;
+            break;
+        case kHIDRemoteButtonCodeLeft:
+            keyCode = NX_KEYTYPE_REWIND;
+            break;
+        case kHIDRemoteButtonCodeRight:
+            keyCode = NX_KEYTYPE_FAST;
+            break;
+        case kHIDRemoteButtonCodeUp:
+            soundEventSend = ^{
+                HIDPostAuxKey(NX_KEYTYPE_SOUND_UP, isPressed);
+            };
+            break;
+        case kHIDRemoteButtonCodeDown:
+            soundEventSend = ^{
+                HIDPostAuxKey(NX_KEYTYPE_SOUND_DOWN, isPressed);
+            };
+            break;;
+        default:
+            // not interested
+            return;
+    }
+    
+    if (soundEventSend != nil) {
+        if (hold) {
+            
+            dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,
+                                                             0, 0, dispatch_get_current_queue());
+            if (timer)
+            {
+                dispatch_source_set_timer(timer, dispatch_walltime(NULL, 0), 0.1f * NSEC_PER_SEC, 0.01f * NSEC_PER_SEC);
+                dispatch_source_set_event_handler(timer, ^{
+                    if (isPressed) {
+                        // pressed still
+                        soundEventSend();
+                    } else {
+                        dispatch_release(timer);
+                    }
+                });
+                dispatch_resume(timer);
+            }
+        } else {
+            soundEventSend();
+        }
+        return;
+    }
+
+    
+    BOOL isRepeat = NO;
+    if (hold) {
+        isRepeat = YES;
+    }
+    
+    // create dummy event to extract dummy values (window, timestamp, etc...)
+    CGEventRef cgEvent = CGEventCreateKeyboardEvent(NULL, keyCode, isPressed);
+    NSEvent *nsEvent = [NSEvent eventWithCGEvent:cgEvent];
+    CFRelease(cgEvent);
+    NSInteger data = (keyCode << 16) | (isPressed ? (0xA << 8): 0) | (isRepeat ? 0x1 : 0);
+    // encode repeat value...
+    NSEvent *event = [NSEvent otherEventWithType:NSSystemDefined location:[nsEvent locationInWindow] modifierFlags:[nsEvent modifierFlags] timestamp:[nsEvent timestamp] windowNumber:[nsEvent windowNumber] context:[nsEvent context] subtype:SPSystemDefinedEventMediaKeys data1:data data2:0];
+    [self handleMediaKeyEvent:[event CGEvent]];
 }
 
 @end
