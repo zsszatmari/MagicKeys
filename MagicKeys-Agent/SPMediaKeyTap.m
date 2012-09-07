@@ -23,7 +23,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 @implementation SPMediaKeyTap
 
 static NSString *kKeySerialNumber = @"SerialNumber";
-static NSString *kKeyIsApple = @"isApple";
+static NSString *kKeyPrefersGlobal = @"PrefersGlobal";
 static NSString *kKeyProcessSpecificTap = @"ProcessTap";
 static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
@@ -245,7 +245,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
     }
     
     NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
-    if ([[entry objectForKey:kKeyIsApple] boolValue]) {
+    if ([[entry objectForKey:kKeyPrefersGlobal] boolValue]) {
         return NO;
     }
     
@@ -256,7 +256,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
     return YES;
 }
 
-- (BOOL)isFirstApple
+- (BOOL)doesFirstPreferGlobal
 {
     
     if ([_mediaKeyAppList count] == 0) {
@@ -265,7 +265,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
     }
     
     NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
-    return [[entry objectForKey:kKeyIsApple] boolValue];
+    return [[entry objectForKey:kKeyPrefersGlobal] boolValue];
 }
 
 // Note: method called on background thread
@@ -301,7 +301,7 @@ static CGEventRef tapEventCallbackForProcess(CGEventTapProxy proxy, CGEventType 
             return event;
         }
         
-        if ([self isFirstApple]) {
+        if ([self doesFirstPreferGlobal]) {
             return NULL;
         } else {
             return event;
@@ -327,7 +327,7 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 
 -(void)mediaKeyAppListChanged;
 {
-    BOOL shouldGrabAppleRemote = ![self isFirstApple];
+    BOOL shouldGrabAppleRemote = ![self doesFirstPreferGlobal];
     BOOL isGrabbingAppleRemote = [hidRemote isStarted];
     if (shouldGrabAppleRemote != isGrabbingAppleRemote) {
         if (shouldGrabAppleRemote) {
@@ -367,7 +367,35 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
     }]];
 }
 
--(void)appIsNowFrontmost:(ProcessSerialNumber)psn
+- (BOOL)isSandboxed:(NSString *)bundleIdentifier
+{
+    NSURL *appUrl;
+    if (LSFindApplicationForInfo(kLSUnknownCreator,(CFStringRef)bundleIdentifier,NULL,NULL,(CFURLRef *)&appUrl) != 0) {
+        return NO;
+    }
+    
+    static SecRequirementRef sandboxRequirement = NULL;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        SecRequirementCreateWithString(CFSTR("entitlement[\"com.apple.security.app-sandbox\"] exists"), kSecCSDefaultFlags, &sandboxRequirement);
+    });
+    
+    SecStaticCodeRef staticCode = NULL;
+    SecStaticCodeCreateWithPath((CFURLRef)appUrl, kSecCSDefaultFlags, &staticCode);
+    
+    BOOL sandboxed = NO;
+    if (staticCode != NULL && sandboxRequirement != NULL) {
+    
+        OSStatus codeCheckResult = SecStaticCodeCheckValidityWithErrors(staticCode, kSecCSBasicValidateOnly, sandboxRequirement, NULL);
+        sandboxed = (codeCheckResult == errSecSuccess);
+    }
+    
+    [appUrl release];
+    
+    return sandboxed;
+}
+
+- (void)appIsNowFrontmost:(ProcessSerialNumber)psn
 {
 	NSValue *psnv = [NSValue valueWithBytes:&psn objCType:@encode(ProcessSerialNumber)];
 	
@@ -379,13 +407,19 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 	NSString *bundleIdentifier = [processInfo objectForKey:(NSString *)kCFBundleIdentifierKey];
 
 	NSArray *whitelistIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:kMediaKeyUsingBundleIdentifiersDefaultsKey];
-	if(![whitelistIdentifiers containsObject:bundleIdentifier]) return;
-
-    
+	if(![whitelistIdentifiers containsObject:bundleIdentifier]) {
+        return;
+    }
+        
 	[self removeSerialFromAppList:psnv];
-    BOOL isApple = [bundleIdentifier hasPrefix:@"com.apple."];
-    NSMutableDictionary *appEntry = [NSMutableDictionary dictionaryWithDictionary:@{ kKeySerialNumber : psnv, kKeyIsApple : @(isApple)}];
-	if (!isApple) {
+    BOOL prefersGlobal = [bundleIdentifier hasPrefix:@"com.apple."];
+    if (!prefersGlobal) {
+        // non-sandboxed application (like VLC, for instance) do have their own method for grabbing events, we don't want to interfere with them
+        prefersGlobal = ![self isSandboxed:bundleIdentifier];
+    }
+    
+    NSMutableDictionary *appEntry = [NSMutableDictionary dictionaryWithDictionary:@{ kKeySerialNumber : psnv, kKeyPrefersGlobal : @(prefersGlobal)}];
+	if (!prefersGlobal) {
         CFMachPortRef port = CGEventTapCreateForPSN(&psn, kCGHeadInsertEventTap,
                                kCGEventTapOptionDefault,
                                CGEventMaskBit(NX_SYSDEFINED),
@@ -394,7 +428,6 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
         if (port == NULL) {
             NSLog(@"error listening tapping to process %@", bundleIdentifier);
         } else {
-            // TODO: leaks!
             CFRunLoopSourceRef sourceForProcessTap = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, port, 0);
             if (sourceForProcessTap == NULL) {
                 NSLog(@"error creating source for process %@", bundleIdentifier);

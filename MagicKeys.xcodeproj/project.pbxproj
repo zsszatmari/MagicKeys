@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA2376B315F9FFF50015ECC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2376B215F9FFF50015ECC8 /* Security.framework */; };
 		AA3D876B15C2B16F00442343 /* MagicKeys.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D876A15C2B16F00442343 /* MagicKeys.png */; };
 		AA965CED15C112FE00429016 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA965CEC15C112FE00429016 /* Cocoa.framework */; };
 		AA965CEF15C112FE00429016 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA965CEE15C112FE00429016 /* PreferencePanes.framework */; };
@@ -49,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA2376B215F9FFF50015ECC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AA3D876A15C2B16F00442343 /* MagicKeys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagicKeys.png; sourceTree = "<group>"; };
 		AA965CE915C112FE00429016 /* MagicKeys.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MagicKeys.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA965CEC15C112FE00429016 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -93,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA2376B315F9FFF50015ECC8 /* Security.framework in Frameworks */,
 				AAFF8D6215F8A54C0084A11B /* IOKit.framework in Frameworks */,
 				AA9793F315C3FEDD00107AB0 /* Cocoa.framework in Frameworks */,
 				AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */,
@@ -124,6 +127,7 @@
 		AA965CEB15C112FE00429016 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA2376B215F9FFF50015ECC8 /* Security.framework */,
 				AAFF8D6115F8A54C0084A11B /* IOKit.framework */,
 				AA9793E815C3C5C000107AB0 /* Carbon.framework */,
 				AA965CEC15C112FE00429016 /* Cocoa.framework */,
