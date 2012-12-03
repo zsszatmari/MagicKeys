@@ -12,12 +12,29 @@
 
 - (NSURL *)applicationPath
 {
-    return [NSURL fileURLWithPath:@"/Applications/G-Ear.app"];
+    NSDictionary *domain = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.treasurebox.magickeys"];
+    
+    BOOL enabled = [[domain objectForKey:@"RunAppWhenPressed"] boolValue];
+    if (!enabled) {
+        return nil;
+    }
+    
+    NSString *path = [domain objectForKey:@"RunAppWhenPressedTarget"];
+    if (path == nil) {
+        return nil;
+    }
+    
+    return [NSURL fileURLWithPath:path];
 }
 
 - (NSString *)applicationBundleId
 {
-    return [[NSBundle bundleWithURL:[self applicationPath]] bundleIdentifier];
+    NSURL *appPath = [self applicationPath];
+    if (appPath == nil) {
+        return nil;
+    }
+    
+    return [[NSBundle bundleWithURL:appPath] bundleIdentifier];
 }
 
 - (BOOL)isRunning:(NSString *)bundleId
@@ -58,8 +75,6 @@
 + (BOOL)launchIfNeeded
 {
     Launcher *launcher = [[[Launcher alloc] init] autorelease];
-   // NSArray *urls;
-   // _LSCopyAllApplicationURLs(&urls);
 
     return [launcher launchIfNeeded];
 }

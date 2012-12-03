@@ -184,9 +184,9 @@
 				AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */,
 				AA9793E215C3C54700107AB0 /* SPMediaKeyTap.h */,
 				AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */,
-				AA9793D115C3C4D400107AB0 /* Supporting Files */,
 				AAB1CCFD166C275800BF3D7B /* Launcher.h */,
 				AAB1CCFE166C275800BF3D7B /* Launcher.m */,
+				AA9793D115C3C4D400107AB0 /* Supporting Files */,
 			);
 			path = "MagicKeys-Agent";
 			sourceTree = "<group>";

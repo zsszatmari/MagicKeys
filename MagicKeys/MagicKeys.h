@@ -14,6 +14,8 @@
     NSTextView *updateText;
     NSTextView *broughtToYouByTreasureBox;
     NSButton *routingCheckbox;
+    NSButton *runAppCheckbox;
+    NSPopUpButton *runAppPopupButton;
 }
 
 @property (strong) IBOutlet NSButton *checkForUpdatesButton;
@@ -23,11 +25,15 @@
 @property (weak) IBOutlet NSButton *routingCheckbox;
 @property (assign) IBOutlet NSButton *appleRemoteCheckbox;
 @property (assign) IBOutlet NSTextField *versionLabel;
+@property (assign) IBOutlet NSButton *runAppCheckbox;
+@property (assign) IBOutlet NSPopUpButton *runAppPopupButton;
 
 
 - (IBAction)checkForUpdatesPressed:(id)sender;
 - (IBAction)toggleRouting:(id)sender;
 - (IBAction)toggleAppleRemote:(id)sender;
+- (IBAction)toggleRunApp:(id)sender;
+- (IBAction)changeRunApp:(id)sender;
 - (void)mainViewDidLoad;
 
 @end

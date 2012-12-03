@@ -12,6 +12,11 @@
 static NSString * const kBundle = @"com.treasurebox.magickeys";
 static NSString * const kHelperPath = @"Contents/Library/LoginItems/MagicKeys-Agent.app";
 static NSString * const kPreferenceKeyNotFirstRun = @"NotFirstRun";
+static NSString * const kPreferenceKeyRunApp = @"RunAppWhenPressed";
+static NSString * const kPreferenceKeyRunAppDefaulted = @"RunAppWhenPressedDefaulted";
+static NSString * const kPreferenceKeyRunAppTarget = @"RunAppWhenPressedTarget";
+
+
 
 static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
 
@@ -24,6 +29,8 @@ static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
 @synthesize routingCheckbox;
 @synthesize appleRemoteCheckbox;
 @synthesize versionLabel;
+@synthesize runAppCheckbox;
+@synthesize runAppPopupButton;
 
 - (void)mainViewDidLoad
 {
@@ -44,9 +51,26 @@ static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
             [self setAppleRemoteEnabled:YES];
         }
         
+        if (![[self defaultsObjectForKey:kPreferenceKeyRunAppDefaulted] boolValue]) {
+            [self setDefaultsObject:@YES forKey:kPreferenceKeyRunAppDefaulted];
+            NSString * const kDefaultURL = @"/Applications/G-Ear.app";
+            NSBundle *bundle = [NSBundle bundleWithURL:[NSURL fileURLWithPath:kDefaultURL]];
+            if (bundle != nil) {
+                [self setDefaultsObject:@YES forKey:kPreferenceKeyRunApp];
+                [self setDefaultsObject:kDefaultURL forKey:kPreferenceKeyRunAppTarget];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+        }
+        
         
         [routingCheckbox setIntValue:routingEnabled];
+        [self setControlsEnabled:routingEnabled];
         [appleRemoteCheckbox setEnabled:routingEnabled];
+        [runAppCheckbox setEnabled:routingEnabled];
+        [runAppPopupButton setEnabled:routingEnabled];
+        
+        [self loadRunAppPreferences];
+        
         
         NSString *treasureText = @"brought to you by Treasure Box";
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:treasureText];
@@ -78,6 +102,9 @@ static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
 - (void)setDefaultsObject:(id)object forKey:(NSString *)key
 {
     NSMutableDictionary *dictionary = [[[NSUserDefaults standardUserDefaults] persistentDomainForName:kBundle] mutableCopy];
+    if (dictionary == nil) {
+        dictionary = [[NSMutableDictionary alloc] initWithCapacity:1];
+    }
     [dictionary setObject:object forKey:key];
     [[NSUserDefaults standardUserDefaults] setPersistentDomain:dictionary forName:kBundle];
     [dictionary release];
@@ -119,7 +146,14 @@ static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
 
 - (IBAction)toggleRouting:(id)sender {
     [self setRoutingEnabled:[routingCheckbox intValue]];
-    [appleRemoteCheckbox setEnabled:[routingCheckbox intValue]];
+    [self setControlsEnabled:[routingCheckbox intValue]];
+}
+
+- (void)setControlsEnabled:(BOOL)enabled
+{
+    [appleRemoteCheckbox setEnabled:enabled];
+    [runAppCheckbox setEnabled:enabled];
+    [runAppPopupButton setEnabled:enabled];
 }
 
 - (IBAction)toggleAppleRemote:(id)sender {
@@ -307,6 +341,83 @@ static NSString * const kAppleRemoteKey = @"AppleRemoteEnabled";
             }
         });
     });
+}
+
+- (NSString *)appNameFromPath:(NSString *)path
+{
+    //NSLog(@"url: %@", path);
+    
+    NSString *prefix = @"/Applications/";
+    NSString *suffix = @".app";
+    if (![path hasPrefix:prefix]) {
+        return nil;
+    }
+    path = [path substringFromIndex:[prefix length]];
+    if (![path hasSuffix:suffix]) {
+        return nil;
+    }
+    path = [path substringToIndex:[path length] - [suffix length]];
+    if ([path rangeOfString:@"/"].location != NSNotFound) {
+        return nil;
+    }
+    return path;
+}
+
+extern void _LSCopyAllApplicationURLs(NSArray **urls);
+
+- (void)loadRunAppPreferences
+{
+    BOOL loadApp = [[self defaultsObjectForKey:kPreferenceKeyRunApp] boolValue];
+    [runAppCheckbox setIntValue:loadApp];
+    
+    NSArray *urls = nil;
+    _LSCopyAllApplicationURLs(&urls);
+    [runAppPopupButton removeAllItems];
+    NSMutableArray *entries = [NSMutableArray array];
+    
+    for (NSURL *url in urls) {
+        
+        NSString *appName = [self appNameFromPath:[url path]];
+        if (appName == nil) {
+            continue;
+        }
+        [entries addObject:appName];
+    }
+    [entries sortUsingSelector:@selector(compare:)];
+    for (NSString *title in entries) {
+        [runAppPopupButton addItemWithTitle:title];
+    }
+    
+    NSString *appTarget = [self defaultsObjectForKey:kPreferenceKeyRunAppTarget];
+    [runAppPopupButton selectItemWithTitle:[self appNameFromPath:appTarget]];
+    
+    [urls release];
+}
+
+- (void)saveRunAppPreferences
+{
+    BOOL enabled = [runAppCheckbox intValue];
+    [self setDefaultsObject:@(enabled) forKey:kPreferenceKeyRunApp];
+    
+    NSString *appString = [runAppPopupButton titleOfSelectedItem];
+    NSString *appUrlString = @"";
+    if ([appString length] > 0) {
+        appUrlString = [NSString stringWithFormat:@"/Applications/%@.app", appString];
+    }
+    [self setDefaultsObject:appUrlString forKey:kPreferenceKeyRunAppTarget];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    //[runAppPopupButton setEnabled:enabled];
+}
+
+- (IBAction)toggleRunApp:(id)sender
+{
+    [self saveRunAppPreferences];
+}
+
+- (IBAction)changeRunApp:(id)sender
+{
+    [self saveRunAppPreferences];
 }
 
 
