@@ -2,6 +2,7 @@
 #import "SPMediaKeyTap.h"
 #import "NSObject+SPInvocationGrabbing.h" // https://gist.github.com/511181, in submodule
 #import "HIDRemote.h"
+#import "Launcher.h"
 
 
 @interface SPMediaKeyTap ()
@@ -239,6 +240,10 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 // event will have been retained in the other thread
 - (BOOL)handleMediaKeyEvent:(CGEventRef)cgEvent {
+
+    if (!mediaAppForeground && [Launcher launchIfNeeded]) {
+        return YES;
+    }
     
     if ([_mediaKeyAppList count] == 0) {
         return NO;
@@ -408,8 +413,10 @@ NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
 
 	NSArray *whitelistIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:kMediaKeyUsingBundleIdentifiersDefaultsKey];
 	if(![whitelistIdentifiers containsObject:bundleIdentifier]) {
+        mediaAppForeground = NO;
         return;
     }
+    mediaAppForeground = YES;
         
 	[self removeSerialFromAppList:psnv];
     BOOL prefersGlobal = [bundleIdentifier hasPrefix:@"com.apple."];

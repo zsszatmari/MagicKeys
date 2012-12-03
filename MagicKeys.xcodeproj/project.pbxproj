@@ -21,6 +21,7 @@
 		AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E115C3C54700107AB0 /* NSObject+SPInvocationGrabbing.m */; };
 		AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */; };
 		AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9793E815C3C5C000107AB0 /* Carbon.framework */; };
+		AAB1CCFF166C275800BF3D7B /* Launcher.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB1CCFE166C275800BF3D7B /* Launcher.m */; };
 		AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFF8D5E15F8A0650084A11B /* HIDRemote.m */; };
 		AAFF8D6215F8A54C0084A11B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAFF8D6115F8A54C0084A11B /* IOKit.framework */; };
 		AAFF8D9615F8FC0E0084A11B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AAFF8D9515F8FC0E0084A11B /* Credits.rtf */; };
@@ -75,6 +76,8 @@
 		AA9793F115C3FEDD00107AB0 /* MagicKeys-Agent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MagicKeys-Agent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA9793F615C3FEDD00107AB0 /* MagicKeys-Agent-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MagicKeys-Agent-Info.plist"; sourceTree = "<group>"; };
 		AA9793F815C3FEDD00107AB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AAB1CCFD166C275800BF3D7B /* Launcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Launcher.h; sourceTree = "<group>"; };
+		AAB1CCFE166C275800BF3D7B /* Launcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Launcher.m; sourceTree = "<group>"; };
 		AAFF8D5E15F8A0650084A11B /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemote.m; sourceTree = "<group>"; };
 		AAFF8D5F15F8A0650084A11B /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemote.h; sourceTree = "<group>"; };
 		AAFF8D6115F8A54C0084A11B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -182,6 +185,8 @@
 				AA9793E215C3C54700107AB0 /* SPMediaKeyTap.h */,
 				AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */,
 				AA9793D115C3C4D400107AB0 /* Supporting Files */,
+				AAB1CCFD166C275800BF3D7B /* Launcher.h */,
+				AAB1CCFE166C275800BF3D7B /* Launcher.m */,
 			);
 			path = "MagicKeys-Agent";
 			sourceTree = "<group>";
@@ -323,6 +328,7 @@
 				AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */,
 				AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */,
+				AAB1CCFF166C275800BF3D7B /* Launcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,6 +19,8 @@
 	// The app that is frontmost in this list owns media keys
 	NSMutableArray *_mediaKeyAppList;
     HIDRemote *hidRemote;
+    
+    BOOL mediaAppForeground;
 }
 + (NSArray*)defaultMediaKeyUserBundleIdentifiers;
 
