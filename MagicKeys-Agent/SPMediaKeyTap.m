@@ -4,6 +4,8 @@
 #import "HIDRemote.h"
 #import "Launcher.h"
 
+#define DEBUG_REMOTEVOLUME
+
 
 @interface SPMediaKeyTap ()
 -(BOOL)shouldInterceptMediaKeyEvents;
@@ -83,7 +85,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 	_eventPort = CGEventTapCreate(kCGSessionEventTap,
 								  kCGHeadInsertEventTap,
 								  kCGEventTapOptionDefault,
-								  CGEventMaskBit(NX_SYSDEFINED),
+								  kCGEventMaskForAllEvents /*CGEventMaskBit(NX_SYSDEFINED)*/,
 								  tapEventCallback,
 								  self);
 	assert(_eventPort != NULL);
@@ -277,6 +279,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
+    //NSLog(@"bla %d", type);
     SPMediaKeyTap *self = refcon;
     
     @autoreleasepool {
@@ -564,12 +567,24 @@ fromHardwareWithAttributes:(NSMutableDictionary *)attributes
             keyCode = NX_KEYTYPE_FAST;
             break;
         case kHIDRemoteButtonCodeUp:
+#ifdef DEBUG_REMOTEVOLUME
+            NSLog(@"MagicKeys volume initiating up %d", isPressed);
+#endif
             soundEventSend = ^{
+#ifdef DEBUG_REMOTEVOLUME
+                NSLog(@"MagicKeys volume sending up %d", isPressed);
+#endif
                 HIDPostAuxKey(NX_KEYTYPE_SOUND_UP, isPressed);
             };
             break;
         case kHIDRemoteButtonCodeDown:
+#ifdef DEBUG_REMOTEVOLUME
+            NSLog(@"MagicKeys volume initiating down %d", isPressed);
+#endif
             soundEventSend = ^{
+#ifdef DEBUG_REMOTEVOLUME
+                NSLog(@"MagicKeys volume sending down %d", isPressed);
+#endif
                 HIDPostAuxKey(NX_KEYTYPE_SOUND_DOWN, isPressed);
             };
             break;;
