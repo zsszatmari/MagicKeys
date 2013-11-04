@@ -531,7 +531,7 @@ static void HIDPostAuxKey( const UInt8 auxKeyCode, BOOL down )
     IOGPoint      loc = { 0, 0 };
     
     // Key press event
-    UInt32      evtInfo = auxKeyCode << 16 | (down ? (NX_KEYDOWN << 8) : 0);
+    UInt32      evtInfo = auxKeyCode << 16 | (down ? (NX_KEYDOWN << 8) : (NX_KEYUP << 8));
     bzero(&event, sizeof(NXEventData));
     event.compound.subType = NX_SUBTYPE_AUX_CONTROL_BUTTONS;
     event.compound.misc.L[0] = evtInfo;
