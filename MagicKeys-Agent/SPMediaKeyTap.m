@@ -100,11 +100,31 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
         hidRemote = [HIDRemote sharedHIDRemote];
         [hidRemote setDelegate:self];
     }
+    
+    if (mikey == nil) {
+        NSArray *mikeys = [DDHidAppleMikey allMikeys];
+        if ([mikeys count] > 0) {
+            mikey = [[mikeys objectAtIndex:0] retain];
+            [mikey setDelegate:self];
+            [mikey setListenInExclusiveMode:YES];
+            @try {
+                [mikey startListening];
+            } @catch (id exception) {
+                NSLog(@"access to mic failed");
+            }
+        }
+    }
 }
 
 -(void)stopWatchingMediaKeys;
 {
 	// TODO<nevyn>: Shut down thread, remove event tap port and source
+    
+    if (mikey) {
+        [mikey stopListening];
+        [mikey release];
+        mikey = nil;
+    }
     
     if(_tapThreadRL){
         CFRunLoopStop(_tapThreadRL);
@@ -241,8 +261,13 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 
 // event will have been retained in the other thread
-- (BOOL)handleMediaKeyEvent:(CGEventRef)cgEvent {
-
+- (BOOL)handleMediaKeyEvent:(CGEventRef)cgEvent
+{
+#if DEBUG
+    NSLog(@"media event: %@", [NSEvent eventWithCGEvent:cgEvent]);
+#endif
+    
+    
     if (!mediaAppForeground && [Launcher launchIfNeeded]) {
         return YES;
     }
@@ -252,6 +277,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
     }
     
     NSDictionary *entry = [_mediaKeyAppList objectAtIndex:0];
+    // this could be mistaken if both App Store and out-of-App Store versions of G-Ear are installed on the machine...
     if ([[entry objectForKey:kKeyPrefersGlobal] boolValue]) {
         return NO;
     }
@@ -279,7 +305,9 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
-    //NSLog(@"bla %d", type);
+#ifdef DEBUG
+    //NSLog(@"event %d", type);
+#endif
     SPMediaKeyTap *self = refcon;
     
     @autoreleasepool {
@@ -529,6 +557,8 @@ static io_connect_t get_event_driver(void)
 
 static void HIDPostAuxKey( const UInt8 auxKeyCode, BOOL down )
 {
+    // pretend that the user just pressed the key
+    
     NXEventData   event;
     kern_return_t kr;
     IOGPoint      loc = { 0, 0 };
@@ -623,14 +653,48 @@ fromHardwareWithAttributes:(NSMutableDictionary *)attributes
         isRepeat = YES;
     }
     
-    // create dummy event to extract dummy values (window, timestamp, etc...)
-    CGEventRef cgEvent = CGEventCreateKeyboardEvent(NULL, keyCode, isPressed);
-    NSEvent *nsEvent = [NSEvent eventWithCGEvent:cgEvent];
-    CFRelease(cgEvent);
+    [self simulateKeyPress:keyCode pressed:isPressed repeat:isRepeat];
+}
+
+- (void)simulateKeyPress:(int)keyCode pressed:(BOOL)isPressed repeat:(BOOL)isRepeat
+{
+    // some voodoo here
     NSInteger data = (keyCode << 16) | (isPressed ? (0xA << 8): 0) | (isRepeat ? 0x1 : 0);
-    // encode repeat value...
-    NSEvent *event = [NSEvent otherEventWithType:NSSystemDefined location:[nsEvent locationInWindow] modifierFlags:[nsEvent modifierFlags] timestamp:[nsEvent timestamp] windowNumber:[nsEvent windowNumber] context:[nsEvent context] subtype:SPSystemDefinedEventMediaKeys data1:data data2:0];
+    
+    NSTimeInterval timestamp = [[NSProcessInfo processInfo] systemUptime];
+    NSEvent *event = [NSEvent otherEventWithType:NSSystemDefined location:CGPointMake(0, 0) modifierFlags:0 timestamp:timestamp windowNumber:0 context:0 subtype:SPSystemDefinedEventMediaKeys data1:data data2:0];
     [self handleMediaKeyEvent:[event CGEvent]];
+}
+
+- (void) ddhidAppleMikey: (DDHidAppleMikey *) mikey
+                   press: (unsigned) usageId
+                upOrDown:(BOOL)down
+{
+    const int kVolumeDown = 141;
+    const int kVolumeUp = 140;
+    const int kPlayPause = 137;
+    
+    if (!down) {
+        return;
+    }
+    switch (usageId) {
+        case kVolumeDown:
+            HIDPostAuxKey(NX_KEYTYPE_SOUND_DOWN, YES);
+            HIDPostAuxKey(NX_KEYTYPE_SOUND_DOWN, NO);
+            break;
+        case kVolumeUp:
+            HIDPostAuxKey(NX_KEYTYPE_SOUND_UP, YES);
+            HIDPostAuxKey(NX_KEYTYPE_SOUND_UP, NO);
+            break;
+        case kPlayPause:
+            // this is wrong becuase it also launches iTunes
+            //HIDPostAuxKey(NX_KEYTYPE_PLAY, YES);
+            //HIDPostAuxKey(NX_KEYTYPE_PLAY, NO);
+
+            [self simulateKeyPress:NX_KEYTYPE_PLAY pressed:YES repeat:NO];
+            [self simulateKeyPress:NX_KEYTYPE_PLAY pressed:NO repeat:NO];
+            break;
+    }
 }
 
 @end

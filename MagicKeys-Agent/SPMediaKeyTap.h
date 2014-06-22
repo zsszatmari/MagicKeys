@@ -3,6 +3,7 @@
 #import <Carbon/Carbon.h>
 
 #import "HIDRemote.h"
+#import "DDHidAppleMikey.h"
 
 // http://overooped.com/post/2593597587/mediakeys
 
@@ -19,6 +20,7 @@
 	// The app that is frontmost in this list owns media keys
 	NSMutableArray *_mediaKeyAppList;
     HIDRemote *hidRemote;
+    DDHidAppleMikey *mikey;
     
     BOOL mediaAppForeground;
 }

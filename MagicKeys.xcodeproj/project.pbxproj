@@ -22,6 +22,17 @@
 		AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9793E315C3C54700107AB0 /* SPMediaKeyTap.m */; };
 		AA97940F15C3FFCD00107AB0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9793E815C3C5C000107AB0 /* Carbon.framework */; };
 		AAB1CCFF166C275800BF3D7B /* Launcher.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB1CCFE166C275800BF3D7B /* Launcher.m */; };
+		AAE3782019575585009D9B7F /* DDHidAppleMikey.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3781D19575585009D9B7F /* DDHidAppleMikey.m */; };
+		AAE3782119575585009D9B7F /* DDHidDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3781F19575585009D9B7F /* DDHidDevice.m */; };
+		AAE37824195755CA009D9B7F /* DDHidUsage.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE37823195755CA009D9B7F /* DDHidUsage.m */; };
+		AAE3782B195755E2009D9B7F /* DDHidEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE37826195755E2009D9B7F /* DDHidEvent.m */; };
+		AAE3782C195755E2009D9B7F /* DDHidUsageTables.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE37828195755E2009D9B7F /* DDHidUsageTables.m */; };
+		AAE3782D195755E2009D9B7F /* NSDictionary+DDHidExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3782A195755E2009D9B7F /* NSDictionary+DDHidExtras.m */; };
+		AAE37830195755F1009D9B7F /* DDHidElement.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3782F195755F1009D9B7F /* DDHidElement.m */; };
+		AAE3783719575605009D9B7F /* DDHidQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3783219575605009D9B7F /* DDHidQueue.m */; };
+		AAE3783819575605009D9B7F /* DDHidKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3783419575605009D9B7F /* DDHidKeyboard.m */; };
+		AAE3783919575605009D9B7F /* DDHidAppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3783619575605009D9B7F /* DDHidAppleRemote.m */; };
+		AAE3783C1957562C009D9B7F /* NSXReturnThrowError.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE3783B1957562C009D9B7F /* NSXReturnThrowError.m */; };
 		AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFF8D5E15F8A0650084A11B /* HIDRemote.m */; };
 		AAFF8D6215F8A54C0084A11B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAFF8D6115F8A54C0084A11B /* IOKit.framework */; };
 		AAFF8D9615F8FC0E0084A11B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AAFF8D9515F8FC0E0084A11B /* Credits.rtf */; };
@@ -78,6 +89,28 @@
 		AA9793F815C3FEDD00107AB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AAB1CCFD166C275800BF3D7B /* Launcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Launcher.h; sourceTree = "<group>"; };
 		AAB1CCFE166C275800BF3D7B /* Launcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Launcher.m; sourceTree = "<group>"; };
+		AAE3781C19575585009D9B7F /* DDHidAppleMikey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidAppleMikey.h; sourceTree = "<group>"; };
+		AAE3781D19575585009D9B7F /* DDHidAppleMikey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidAppleMikey.m; sourceTree = "<group>"; };
+		AAE3781E19575585009D9B7F /* DDHidDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidDevice.h; sourceTree = "<group>"; };
+		AAE3781F19575585009D9B7F /* DDHidDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidDevice.m; sourceTree = "<group>"; };
+		AAE37822195755CA009D9B7F /* DDHidUsage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidUsage.h; sourceTree = "<group>"; };
+		AAE37823195755CA009D9B7F /* DDHidUsage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidUsage.m; sourceTree = "<group>"; };
+		AAE37825195755E2009D9B7F /* DDHidEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidEvent.h; sourceTree = "<group>"; };
+		AAE37826195755E2009D9B7F /* DDHidEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidEvent.m; sourceTree = "<group>"; };
+		AAE37827195755E2009D9B7F /* DDHidUsageTables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidUsageTables.h; sourceTree = "<group>"; };
+		AAE37828195755E2009D9B7F /* DDHidUsageTables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidUsageTables.m; sourceTree = "<group>"; };
+		AAE37829195755E2009D9B7F /* NSDictionary+DDHidExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+DDHidExtras.h"; sourceTree = "<group>"; };
+		AAE3782A195755E2009D9B7F /* NSDictionary+DDHidExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+DDHidExtras.m"; sourceTree = "<group>"; };
+		AAE3782E195755F1009D9B7F /* DDHidElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidElement.h; sourceTree = "<group>"; };
+		AAE3782F195755F1009D9B7F /* DDHidElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidElement.m; sourceTree = "<group>"; };
+		AAE3783119575605009D9B7F /* DDHidQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidQueue.h; sourceTree = "<group>"; };
+		AAE3783219575605009D9B7F /* DDHidQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidQueue.m; sourceTree = "<group>"; };
+		AAE3783319575605009D9B7F /* DDHidKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidKeyboard.h; sourceTree = "<group>"; };
+		AAE3783419575605009D9B7F /* DDHidKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidKeyboard.m; sourceTree = "<group>"; };
+		AAE3783519575605009D9B7F /* DDHidAppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDHidAppleRemote.h; sourceTree = "<group>"; };
+		AAE3783619575605009D9B7F /* DDHidAppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDHidAppleRemote.m; sourceTree = "<group>"; };
+		AAE3783A1957562C009D9B7F /* NSXReturnThrowError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSXReturnThrowError.h; sourceTree = "<group>"; };
+		AAE3783B1957562C009D9B7F /* NSXReturnThrowError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSXReturnThrowError.m; sourceTree = "<group>"; };
 		AAFF8D5E15F8A0650084A11B /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemote.m; sourceTree = "<group>"; };
 		AAFF8D5F15F8A0650084A11B /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemote.h; sourceTree = "<group>"; };
 		AAFF8D6115F8A54C0084A11B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -177,6 +210,7 @@
 		AA9793CE15C3C4D400107AB0 /* MagicKeys-Agent */ = {
 			isa = PBXGroup;
 			children = (
+				AAE3781B19575536009D9B7F /* DDHidLib */,
 				AAFF8D5E15F8A0650084A11B /* HIDRemote.m */,
 				AAFF8D5F15F8A0650084A11B /* HIDRemote.h */,
 				AA9793E615C3C57C00107AB0 /* main.m */,
@@ -199,6 +233,35 @@
 				AA9793D215C3C4D400107AB0 /* MagicKeys-Agent-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AAE3781B19575536009D9B7F /* DDHidLib */ = {
+			isa = PBXGroup;
+			children = (
+				AAE3783A1957562C009D9B7F /* NSXReturnThrowError.h */,
+				AAE3783B1957562C009D9B7F /* NSXReturnThrowError.m */,
+				AAE3783119575605009D9B7F /* DDHidQueue.h */,
+				AAE3783219575605009D9B7F /* DDHidQueue.m */,
+				AAE3783319575605009D9B7F /* DDHidKeyboard.h */,
+				AAE3783419575605009D9B7F /* DDHidKeyboard.m */,
+				AAE3783519575605009D9B7F /* DDHidAppleRemote.h */,
+				AAE3783619575605009D9B7F /* DDHidAppleRemote.m */,
+				AAE3782E195755F1009D9B7F /* DDHidElement.h */,
+				AAE3782F195755F1009D9B7F /* DDHidElement.m */,
+				AAE37825195755E2009D9B7F /* DDHidEvent.h */,
+				AAE37826195755E2009D9B7F /* DDHidEvent.m */,
+				AAE37827195755E2009D9B7F /* DDHidUsageTables.h */,
+				AAE37828195755E2009D9B7F /* DDHidUsageTables.m */,
+				AAE37829195755E2009D9B7F /* NSDictionary+DDHidExtras.h */,
+				AAE3782A195755E2009D9B7F /* NSDictionary+DDHidExtras.m */,
+				AAE37822195755CA009D9B7F /* DDHidUsage.h */,
+				AAE37823195755CA009D9B7F /* DDHidUsage.m */,
+				AAE3781C19575585009D9B7F /* DDHidAppleMikey.h */,
+				AAE3781D19575585009D9B7F /* DDHidAppleMikey.m */,
+				AAE3781E19575585009D9B7F /* DDHidDevice.h */,
+				AAE3781F19575585009D9B7F /* DDHidDevice.m */,
+			);
+			path = DDHidLib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -325,9 +388,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA97940C15C3FFB800107AB0 /* main.m in Sources */,
+				AAE37824195755CA009D9B7F /* DDHidUsage.m in Sources */,
+				AAE3782D195755E2009D9B7F /* NSDictionary+DDHidExtras.m in Sources */,
 				AA97940D15C3FFBC00107AB0 /* NSObject+SPInvocationGrabbing.m in Sources */,
+				AAE3783819575605009D9B7F /* DDHidKeyboard.m in Sources */,
+				AAE3782B195755E2009D9B7F /* DDHidEvent.m in Sources */,
+				AAE3782019575585009D9B7F /* DDHidAppleMikey.m in Sources */,
+				AAE3783C1957562C009D9B7F /* NSXReturnThrowError.m in Sources */,
+				AAE3783719575605009D9B7F /* DDHidQueue.m in Sources */,
 				AA97940E15C3FFBF00107AB0 /* SPMediaKeyTap.m in Sources */,
 				AAFF8D6015F8A0650084A11B /* HIDRemote.m in Sources */,
+				AAE3783919575605009D9B7F /* DDHidAppleRemote.m in Sources */,
+				AAE37830195755F1009D9B7F /* DDHidElement.m in Sources */,
+				AAE3782119575585009D9B7F /* DDHidDevice.m in Sources */,
+				AAE3782C195755E2009D9B7F /* DDHidUsageTables.m in Sources */,
 				AAB1CCFF166C275800BF3D7B /* Launcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -397,7 +471,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Debug;
 		};
@@ -421,7 +495,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Release;
 		};
@@ -462,6 +536,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
 				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
@@ -476,6 +551,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagicKeys-Agent/MagicKeys-Agent-Prefix.pch";
 				INFOPLIST_FILE = "MagicKeys-Agent/MagicKeys-Agent-Info.plist";
