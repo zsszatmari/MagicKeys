@@ -568,22 +568,22 @@ fromHardwareWithAttributes:(NSMutableDictionary *)attributes
             break;
         case kHIDRemoteButtonCodeUp:
 #ifdef DEBUG_REMOTEVOLUME
-            NSLog(@"MagicKeys volume initiating up %d", isPressed);
+            //NSLog(@"MagicKeys volume initiating up %d", isPressed);
 #endif
             soundEventSend = ^{
 #ifdef DEBUG_REMOTEVOLUME
-                NSLog(@"MagicKeys volume sending up %d", isPressed);
+                //NSLog(@"MagicKeys volume sending up %d", isPressed);
 #endif
                 HIDPostAuxKey(NX_KEYTYPE_SOUND_UP, isPressed);
             };
             break;
         case kHIDRemoteButtonCodeDown:
 #ifdef DEBUG_REMOTEVOLUME
-            NSLog(@"MagicKeys volume initiating down %d", isPressed);
+            //NSLog(@"MagicKeys volume initiating down %d", isPressed);
 #endif
             soundEventSend = ^{
 #ifdef DEBUG_REMOTEVOLUME
-                NSLog(@"MagicKeys volume sending down %d", isPressed);
+                //NSLog(@"MagicKeys volume sending down %d", isPressed);
 #endif
                 HIDPostAuxKey(NX_KEYTYPE_SOUND_DOWN, isPressed);
             };
