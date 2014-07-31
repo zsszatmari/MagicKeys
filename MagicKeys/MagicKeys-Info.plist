@@ -17,13 +17,13 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2012 Treasure Box. All rights reserved.</string>
+	<string>Copyright © 2012-2014 Treasure Box. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MagicKeys</string>
 	<key>NSPrefPaneIconFile</key>
