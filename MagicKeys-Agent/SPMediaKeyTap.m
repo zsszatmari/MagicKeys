@@ -82,10 +82,12 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 	[self setShouldInterceptMediaKeyEvents:YES];
 	
 	// Add an event tap to intercept the system defined media key events
+    // kCGEventMaskForAllEvents is wrong because it catches three-button gesture (dictionary lookup),
+    // and even if we later drop it, it won't work
 	_eventPort = CGEventTapCreate(kCGSessionEventTap,
 								  kCGHeadInsertEventTap,
 								  kCGEventTapOptionDefault,
-								  kCGEventMaskForAllEvents /*CGEventMaskBit(NX_SYSDEFINED)*/,
+								  CGEventMaskBit(NX_SYSDEFINED),
 								  tapEventCallback,
 								  self);
 	assert(_eventPort != NULL);
@@ -307,7 +309,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
 #ifdef DEBUG
-    //NSLog(@"event %d", type);
+//    NSLog(@"event %d", type);
 #endif
     SPMediaKeyTap *self = refcon;
     
@@ -318,10 +320,17 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
         }
         
         if ([self handleMediaKeyEvent:event]) {
-            
+        
+#ifdef DEBUG
+            NSLog(@"media event %d forwarded to specific app, dropping", type);
+#endif
             // handled
             return NULL;
         }
+        
+#ifdef DEBUG
+        NSLog(@"media event %d unhandled", type);
+#endif
         
         // normal flow, for now (see you at tapEventCallbackForProcess)
         return event;
