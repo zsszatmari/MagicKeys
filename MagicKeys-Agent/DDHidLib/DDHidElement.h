@@ -36,10 +36,6 @@
 
 + (NSArray *) elementsWithPropertiesArray: (NSArray *) propertiesArray;
 
-+ (DDHidElement *) elementWithProperties: (NSDictionary *) properties;
-
-- (id) initWithProperties: (NSDictionary *) properties;
-
 - (NSDictionary *) properties;
 
 - (NSString *) stringForKey: (NSString *) key;

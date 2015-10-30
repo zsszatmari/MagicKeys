@@ -38,7 +38,9 @@
     while (properties = [e nextObject])
     {
         DDHidElement * element = [DDHidElement elementWithProperties: properties];
-        [elements addObject: element];
+        if (element) {
+            [elements addObject: element];
+        }
     }
     
     return elements;
@@ -64,6 +66,11 @@
     
     NSArray * elementsProperties =
         [mProperties ddhid_objectForString: kIOHIDElementKey];
+    if (![elementsProperties isKindOfClass:[NSArray class]]) {
+        // it would crash otherwise
+        [self release];
+        return nil;
+    }
     mElements = [[DDHidElement elementsWithPropertiesArray: elementsProperties]
         retain];
 
