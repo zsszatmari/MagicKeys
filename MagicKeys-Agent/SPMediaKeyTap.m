@@ -186,6 +186,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
 		@"com.macromedia.fireworks", // the tap messes up their mouse input
         @"com.treasurebox.gear",
         @"de.call-a-nerd.StreamCloud", //Added StreamCloud
+        @"net.relisten.osx.Relisten", // Added Relisten
 		nil
 	];
 }
