@@ -187,6 +187,7 @@ static NSString *kKeyProcessSpecificRunloopSource = @"ProcessSource";
         @"com.treasurebox.gear",
         @"de.call-a-nerd.StreamCloud", //Added StreamCloud
         @"net.relisten.osx.Relisten", // Added Relisten
+		@"com.kkbox.KKBOXForMac",
 		nil
 	];
 }
